@@ -22,6 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 0. Lowercase
+      - name: lowercase repo name
+        run: |
+          echo "IMAGE_NAME_LOWER=${IMAGE_NAME,,}" >> $GITHUB_ENV
+
       # 1. Setup UV
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -48,7 +53,7 @@ jobs:
           context: .
           file: Dockerfile.api
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
+          tags: ${{ env.REGISTRY }}/${{ env.env.IMAGE_NAME_LOWER }}-api:latest
 
       # 5. Build and Push the UI image (Streamlit)
       - name: Build and push UI
@@ -57,4 +62,4 @@ jobs:
           context: .
           file: Dockerfile.frontend
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest
+          tags: ${{ env.REGISTRY }}/${{ env.env.IMAGE_NAME_LOWER }}-frontend:latest

@@ -1,5 +1,5 @@
 from openai import OpenAI
-from .config import settings
+from core.config import settings
 
 client = OpenAI(
     base_url=settings.OLLAMA_BASE_URL,

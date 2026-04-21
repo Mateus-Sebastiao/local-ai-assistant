@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .core.llm import analyze_ideas
+from core.llm import analyze_ideas
 
 app = FastAPI(title="Senior DevOps Assistant API")
 

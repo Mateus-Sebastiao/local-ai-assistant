@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-assistant
+  namespace: devops-assistant
+data:
+  OLLAMA_BASE_URL: "http://service-ollama.devops-assistant.svc.cluster.local:11434/v1" # Your machine's IP
+  API_URL: "http://service-api:8000"

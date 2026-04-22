@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-frontend
+  namespace: devops-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend-devops-assistant
+          image: ghcr.io/mateus-sebastiao/local-ai-assistant-frontend:latest
+          ports:
+            - containerPort: 8501
+          envFrom:
+            - configMapRef:
+                name: config-assistant

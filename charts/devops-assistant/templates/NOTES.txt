@@ -1,0 +1,25 @@
+{{ include "devops-assistant.fullname" . }} has been successfully installed!
+
+To access the applications for your DevOps assistant:
+
+1. Accessing the Frontend (Web Interface):
+{{- if contains "NodePort" .Values.frontend.service.type }}
+   The Frontend is running via NodePort. To access it:
+   export NODE_PORT=$(kubectl get --namespace {{ .Values.global.namespace | default .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "devops-assistant.fullname" . }}-frontend)
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Values.global.namespace | default .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "Visit the interface at: http://$NODE_IP:$NODE_PORT"
+{{- else }}
+   The Frontend is running via ClusterIP. To access it locally:
+   kubectl --namespace {{ .Values.global.namespace | default .Release.Namespace }} port-forward svc/{{ include "devops-assistant.fullname" . }}-frontend 8501:8501
+   Visit the interface at: http://127.0.0.1:8501
+{{- end }}
+
+2. Accessing the Assistant API:
+   The API is running internally. To run local tests directly against it:
+   kubectl --namespace {{ .Values.global.namespace | default .Release.Namespace }} port-forward svc/{{ include "devops-assistant.fullname" . }}-api 8000:8000
+   API URL: http://127.0.0.1:8000
+
+3. Accessing Ollama:
+   The Ollama service is isolated inside the cluster. To talk directly to its API:
+   kubectl --namespace {{ .Values.global.namespace | default .Release.Namespace }} port-forward svc/{{ include "devops-assistant.fullname" . }}-ollama 11434:11434
+   Test connection: curl http://127.0.0.1:11434

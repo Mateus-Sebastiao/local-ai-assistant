@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "devops-assistant.fullname" . }}-config
+  namespace: {{ .Values.global.namespace }}
+data:
+  OLLAMA_BASE_URL: "http://{{ include "devops-assistant.fullname" . }}-svc-ollama:{{ .Values.ollama.service.targetPort }}/v1"
+  API_URL: "http://{{ include "devops-assistant.fullname" . }}-svc-api:{{ .Values.api.service.targetPort }}"

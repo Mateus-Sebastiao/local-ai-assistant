@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "devops-assistant.fullname" . }}-deployment-api
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "devops-assistant.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "devops-assistant.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
+  template:
+    metadata:
+      labels:
+        {{- include "devops-assistant.labels" . | nindent 8 }}
+        app.kubernetes.io/component: api
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-api
+          image: {{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}
+          ports:
+            - containerPort: {{ .Values.api.service.targetPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "devops-assistant.fullname" . }}-config

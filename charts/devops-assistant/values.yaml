@@ -1,0 +1,76 @@
+# Global configurations shared across all components
+global:
+  # The Kubernetes namespace where all resources will be deployed
+  namespace: devops-assistant
+
+# Backend API Configuration
+api:
+  # Number of running instances for the API
+  replicaCount: 2
+
+  image:
+    # Docker image repository for the API
+    repository: ghcr.io/mateus-sebastiao/local-ai-assistant-api
+    # Specific image tag (e.g., "latest" or a commit hash)
+    tag: "latest"
+
+  service:
+    # Type of Kubernetes Service (ClusterIP, NodePort, LoadBalancer)
+    type: ClusterIP
+    # Port exposed by the service within the cluster
+    port: 8000
+    # Port the application is listening on inside the container
+    targetPort: 8000
+
+# UI/Frontend Configuration
+frontend:
+  # Number of running instances for the Frontend
+  replicaCount: 1
+
+  image:
+    # Docker image repository for the Frontend
+    repository: ghcr.io/mateus-sebastiao/local-ai-assistant-frontend
+    tag: "latest"
+
+  service:
+    # Exposed via NodePort to allow external browser access without an Ingress
+    type: NodePort
+    port: 8501
+    targetPort: 8501
+
+# AI Model Server (Ollama) Configuration
+ollama:
+  # Number of running instances for the AI engine
+  replicaCount: 1
+
+  image:
+    # Official Ollama Docker image repository
+    repository: ollama/ollama
+    tag: "latest"
+
+  service:
+    # ClusterIP ensures Ollama is only accessible by the API inside the cluster
+    type: ClusterIP
+    port: 11434
+    targetPort: 11434
+
+  # Environmental variables injected directly into the Ollama container
+  env:
+    - name: OLLAMA_HOST
+      value: "0.0.0.0"
+
+  # Host folders or persistent volumes to mount into the Ollama pod
+  volumes:
+  - name: models-volume
+    hostPath:
+      # Local path on the host node to store heavy AI models persistent data
+      path: /usr/share/ollama/.ollama
+      type: DirectoryOrCreate
+
+  # Mapping the volumes to specific folder paths inside the container
+  volumeMounts: 
+  - name: models-volume
+    # Ollama looks for downloaded models in this directory
+    mountPath: "/root/.ollama"
+    # Set to true to protect downloaded models from accidental deletion by the container
+    readOnly: true

@@ -1,7 +1,7 @@
 # Global configurations shared across all components
 global:
   # The Kubernetes namespace where all resources will be deployed
-  namespace: devops-assistant
+  namespace: local-ai-assistant
 
 # Backend API Configuration
 api:

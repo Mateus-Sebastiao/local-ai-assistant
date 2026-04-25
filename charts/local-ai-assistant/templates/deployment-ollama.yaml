@@ -21,6 +21,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}-ollama
           image: {{ .Values.ollama.image.repository }}:{{ .Values.ollama.image.tag }}
+          imagePullPolicy: {{ .Values.ollama.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.ollama.service.targetPort }}
 

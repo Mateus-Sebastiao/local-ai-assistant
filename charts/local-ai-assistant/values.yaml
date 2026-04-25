@@ -46,7 +46,8 @@ ollama:
   image:
     # Official Ollama Docker image repository
     repository: ollama/ollama
-    tag: "latest"
+    tag: "0.21.3-rc0"
+    pullPolicy: IfNotPresent
 
   service:
     # ClusterIP ensures Ollama is only accessible by the API inside the cluster

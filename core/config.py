@@ -1,9 +1,13 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    # Security (Use: openssl rand -hex 32 to generate a real one)
+    SECRET_KEY: str = "change-me-in-production"
+    ENV: str = "development" # development or production
+    
     # LLM Configs
     LLM_PROVIDER: str = "ollama"
-    OLLAMA_MODEL: str = "llama3.2:3b"
+    OLLAMA_MODEL: str = "dolphin-phi:latest"
     OLLAMA_BASE_URL: str = "http://localhost:11434/v1"
     OLLAMA_API_KEY: str = "ollama"
 

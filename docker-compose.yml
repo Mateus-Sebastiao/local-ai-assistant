@@ -1,0 +1,36 @@
+services:
+  # The "Backend" - Senior DevOps Assistant API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: devops-assistant-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434/v1 # Communicates with Ollama on your OS
+      - OLLAMA_MODEL=llama3.2:3b
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Allows the container to access your PC's localhost
+    networks:
+      - devops-network
+
+  # The "Frontend" - Streamlit UI
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: devops-assistant-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      # IMPORTANT: Here we use the service name 'api' instead of localhost
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+    networks:
+      - devops-network
+
+networks:
+  devops-network:
+    driver: bridge

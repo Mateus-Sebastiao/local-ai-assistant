@@ -1,7 +1,7 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 from core.config import settings
 
-client = OpenAI(
+client = AsyncOpenAI(
     base_url=settings.OLLAMA_BASE_URL,
     api_key=settings.OLLAMA_API_KEY
 )
@@ -10,28 +10,18 @@ def load_prompt():
     with open("prompts/system_prompt.txt", "r") as f:
         return f.read()
 
-# async def analyze_ideas(user_prompt: str):
-#     system_prompt = load_prompt()
-
-#     response = client.chat.completions.create(
-#         model=settings.OLLAMA_MODEL,
-#         messages=[
-#             {"role": "system", "content": system_prompt},
-#             {"role": "user", "content": user_prompt}
-#         ],
-#         temperature=0.6
-#     )
-
-#     return response.choices[0].message.content
-
-async def analyze_ideas(messages: list):
+async def analyze_ideas_stream(messages: list):
     system_prompt = load_prompt()
     
     full_messages = [{"role": "system", "content": system_prompt}] + messages
 
-    response = client.chat.completions.create(
+    response = await client.chat.completions.create(
         model=settings.OLLAMA_MODEL,
         messages=full_messages,
-        temperature=0.6
+        temperature=0.6,
+        stream=True 
     )
-    return response.choices[0].message.content
+
+    async for chunk in response:
+        if chunk.choices[0].delta.content:
+            yield chunk.choices[0].delta.content

@@ -1,8 +1,12 @@
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    
     # Security (Use: openssl rand -hex 32 to generate a real one)
-    SECRET_KEY: str = "change-me-in-production"
+    SECRET_KEY: SecretStr = "change-me-in-production"
     ENV: str = "development" # development or production
     
     # LLM Configs
